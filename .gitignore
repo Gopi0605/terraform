@@ -1,0 +1,6 @@
+# excluding terraform directories
+**/.terraform/*
+
+# excluding *.tfstate files
+*.tfstate
+*.tfstate.*
