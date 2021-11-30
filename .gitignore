@@ -4,3 +4,6 @@
 # excluding *.tfstate files
 *.tfstate
 *.tfstate.*
+# excluding terraform.lockfile
+
+*.terraform.*
