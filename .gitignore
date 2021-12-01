@@ -10,4 +10,4 @@
 
 # excluding tfvar files
 
-terraform*.tfvar
+terraform*.tfvars
