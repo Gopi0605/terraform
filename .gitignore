@@ -7,3 +7,7 @@
 # excluding terraform.lockfile
 
 *.terraform.*
+
+# excluding tfvar files
+
+terraform*.tfvar

@@ -2,29 +2,48 @@ provider "aws" {
   region = "us-east-2"
 }
 
+
+variable cidr_blocks {
+  description = "Cidr_block "
+}
+
+
+
 resource "aws_vpc" "vpc-dev" {
-    cidr_block = "10.0.0.0/16"
+    cidr_block = var.cidr_blocks[0]
     tags = {
         Name= "demo-vpc"
+        env = "dev"
     }
 }
 
 resource "aws_subnet" "snet1-dev" {
   vpc_id = aws_vpc.vpc-dev.id
-  cidr_block = "10.0.0.0/24"
+  cidr_block = var.cidr_blocks[1]
   availability_zone = "us-east-2a"
   tags = {
     "Name" = "demo-subnet1"
   }
 }
+
 resource "aws_subnet" "snet2-dev" {
   vpc_id = aws_vpc.vpc-dev.id
-  cidr_block = "10.0.1.0/24"
+  cidr_block = var.cidr_blocks[2]
   availability_zone = "us-east-2b"
   tags = {
     "Name" = "demo-subnet2"
   }
 }
+
+output "vpc" {
+  value = aws_vpc.vpc-dev.id
+  
+}
+
+output "subnet-1" {
+  value = aws_subnet.snet1-dev
+}
+
 /*
 resource "aws_security_group" "sg-dev" {
   name = "demo-sg"
@@ -56,7 +75,7 @@ resource "aws_security_group" "sg-dev" {
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
   }
-} */
+} 
 
 
 resource "aws_default_security_group" "sg-dev"{
@@ -111,7 +130,7 @@ resource "aws_route_table" "it-dev"{
   tags ={
     Name = "demo-it"
   }
-} */
+} 
 
 resource "aws_default_route_table" "rt-dev"{
   default_route_table_id = aws_vpc.vpc-dev.main_route_table_id
@@ -123,3 +142,4 @@ resource "aws_default_route_table" "rt-dev"{
     Name = "demo-rt"
   }
 }
+*/
