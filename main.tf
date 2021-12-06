@@ -5,8 +5,9 @@ provider "aws" {
 variable cidr_blocks {}
 variable env {}
 variable instance_type {}
-variable "sshKey" {}
 variable "avail_zone" {}
+variable "public_key"{}
+variable "private_key"{}
 
 resource "aws_vpc" "vpc-dev" {
     cidr_block = var.cidr_blocks[0]
@@ -160,7 +161,7 @@ output "ami_id" {
 }
 resource "aws_key_pair" "dev-key" {
   key_name = "master"
-  public_key = var.sshKey
+  public_key = "${file(var.public_key)}"
 }
 
 resource "aws_instance" "dev-ec2" {
@@ -174,5 +175,32 @@ resource "aws_instance" "dev-ec2" {
   tags = {
     "Name" = "${var.env}-server"
   }
+   connection {
+     type = "ssh"
+     host = self.public_ip
+     user = "ubuntu"
+     private_key = file(var.private_key)
+   }
 
+   provisioner "file" {
+     source = "/Users/gopi/sessions/terraform/terraform/entry-script.sh"
+     destination = "/home/ubuntu/entry-on-ec2-script.sh"
+   
+   }
+   provisioner "remote-exec" {
+       inline = [
+       "touch /home/ubuntu/Mark.txt",
+       "mkidr /home/ubuntu/Mark-FOlder"
+
+       ]
+   }
+
+   provisioner "local-exec" {
+       command = "echo ${self.public_ip} > ip.txt"
+   }
+  
+}
+
+output "myserver-ip" {
+  value = aws_instance.dev-ec2.public_ip
 }
